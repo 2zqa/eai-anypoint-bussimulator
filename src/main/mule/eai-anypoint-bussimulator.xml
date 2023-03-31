@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="30f6a21c-7bce-46d0-adc0-fc715588f9da" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="eai-anypoint-bussimulatorFlow" doc:id="372eeb4f-c3dc-4efb-b72d-64c76defd6dc" >
+		<http:listener doc:name="Listener" doc:id="1d019930-c493-4960-97ef-6ed06e3a9918" config-ref="HTTP_Listener_config" path="/"/>
+		<ee:transform doc:name="Transform Message" doc:id="1c8631b8-f215-4e44-a6b8-602c6839a634" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload.Bericht.ETAs.*ETA map(item,index) -> {
+                halteNaam: item.halteNaam,
+                richting: item.richting,
+                aankomsttijd: item.aankomsttijd
+            }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="Hallo Wereld!" doc:name="Set Payload" doc:id="0c14665b-6049-4052-b4f5-d67bf4b50c92" />
+	</flow>
+</mule>
