@@ -10,18 +10,21 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:listener-config>
 	<flow name="eai-anypoint-bussimulatorFlow" doc:id="372eeb4f-c3dc-4efb-b72d-64c76defd6dc" >
 		<http:listener doc:name="Listener" doc:id="1d019930-c493-4960-97ef-6ed06e3a9918" config-ref="HTTP_Listener_config" path="/"/>
-		<ee:transform doc:name="Transform Message" doc:id="1c8631b8-f215-4e44-a6b8-602c6839a634" >
+		<ee:transform doc:name="Transform Message" doc:id="d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
-payload.Bericht.ETAs.*ETA map(item,index) -> {
-                halteNaam: item.halteNaam,
-                richting: item.richting,
-                aankomsttijd: item.aankomsttijd
-            }]]></ee:set-payload>
+{
+	tijd: payload.Bericht.tijd,
+	aankomsttijd: payload.Bericht.ETAs.*ETA.aankomsttijd default 0,
+	lijnNaam: payload.Bericht.lijnNaam,
+	busID: payload.Bericht.busID,
+	bedrijf: payload.Bericht.bedrijf,
+	eindpunt: payload.Bericht.eindpunt
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-payload value="Hallo Wereld!" doc:name="Set Payload" doc:id="0c14665b-6049-4052-b4f5-d67bf4b50c92" />
+		<set-payload doc:name="Set Payload" doc:id="0c14665b-6049-4052-b4f5-d67bf4b50c92" value="#[payload]"/>
 	</flow>
 </mule>

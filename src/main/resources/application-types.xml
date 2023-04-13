@@ -46,12 +46,12 @@ type json = {|
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="input"/>
+          <types:payload type="json"/>
         </types:message>
       </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#1c8631b8-f215-4e44-a6b8-602c6839a634">
+  <types:enrichment select="#d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07">
     <types:processor-declaration>
       <types:output-event>
         <types:message>
