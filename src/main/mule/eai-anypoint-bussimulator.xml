@@ -8,6 +8,28 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="30f6a21c-7bce-46d0-adc0-fc715588f9da" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d5202597-c4c9-4e09-ae72-be81ff4b6c45" >
+		<http:request-connection host="localhost" port="5002" />
+	</http:request-config>
+	<flow name="eai-anypoint-bussimulatorFlow1" doc:id="57a579ce-37bf-4746-8bb1-15e0b2bb33b3" >
+		<http:listener doc:name="Listener" doc:id="850768fd-b7c3-4530-a711-dc984532f858" config-ref="HTTP_Listener_config" path="/TijdServer"/>
+		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer"/>
+		<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	Tijd: {
+		minuut: payload.minuut,
+		seconde: payload.seconde,
+		uur: payload.uur
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="5c5b71e2-c4a0-4edf-a75e-86153a3b8018" />
+	</flow>
 	<flow name="eai-anypoint-bussimulatorFlow" doc:id="372eeb4f-c3dc-4efb-b72d-64c76defd6dc" >
 		<http:listener doc:name="Listener" doc:id="1d019930-c493-4960-97ef-6ed06e3a9918" config-ref="HTTP_Listener_config" path="/"/>
 		<ee:transform doc:name="Transform Message" doc:id="d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07" >
