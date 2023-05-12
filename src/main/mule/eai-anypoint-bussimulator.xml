@@ -32,6 +32,7 @@ output application/xml
 	</flow>
 	<flow name="eai-anypoint-bussimulatorFlow" doc:id="372eeb4f-c3dc-4efb-b72d-64c76defd6dc" >
 		<http:listener doc:name="Listener" doc:id="1d019930-c493-4960-97ef-6ed06e3a9918" config-ref="HTTP_Listener_config" path="/"/>
+		<foreach doc:name="For Each" doc:id="d37d5507-dd7b-4fad-8c14-4991a5544c18" collection="#[payload.Bericht.ETAs]"/>
 		<ee:transform doc:name="Transform Message" doc:id="d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
