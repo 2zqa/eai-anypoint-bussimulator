@@ -1,53 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="30f6a21c-7bce-46d0-adc0-fc715588f9da" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d5202597-c4c9-4e09-ae72-be81ff4b6c45" >
-		<http:request-connection host="localhost" port="5002" />
-	</http:request-config>
-	<flow name="python-TimeServer-converter" doc:id="57a579ce-37bf-4746-8bb1-15e0b2bb33b3" >
-		<http:listener doc:name="Listener" doc:id="850768fd-b7c3-4530-a711-dc984532f858" config-ref="HTTP_Listener_config" path="/TijdServer"/>
-		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer"/>
-		<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml
----
-{
-	Tijd: {
-		minuut: payload.minuut,
-		seconde: payload.seconde,
-		uur: payload.uur
-	}
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="5c5b71e2-c4a0-4edf-a75e-86153a3b8018" />
-	</flow>
-	<flow name="eta-distributor" doc:id="372eeb4f-c3dc-4efb-b72d-64c76defd6dc" >
-		<http:listener doc:name="Listener" doc:id="1d019930-c493-4960-97ef-6ed06e3a9918" config-ref="HTTP_Listener_config" path="/"/>
-		<foreach doc:name="For Each" doc:id="d37d5507-dd7b-4fad-8c14-4991a5544c18" collection="#[payload.Bericht.ETAs]"/>
-		<ee:transform doc:name="Transform Message" doc:id="d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+ <jms:config name="JMS_Config">
+  <jms:active-mq-connection >
+   <jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+  </jms:active-mq-connection>
+ </jms:config>
+	<flow name="opgave1Flow" doc:id="35986ee1-ba6e-4b1a-aad3-351f713c2632" >
+		<jms:listener doc:name="On New Message" doc:id="460b3d74-5407-48d7-8031-bccf86273710" config-ref="JMS_Config" destination="TEST">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="c38e754a-0a2c-427b-b863-a84b143c2369" variableName="SetVar" mimeType="application/xml"/>
+		<foreach doc:name="For Each" doc:id="35099dd3-fd10-46ef-b2e3-2cc323a3e0d4" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.SetVar.bericht.ETAs.*ETA map(item,index) -&gt; {&#10;                halteNaam: item.halteNaam,&#10;                richting: item.richting,&#10;                aankomsttijd: item.aankomsttijd&#10;            }]">
+			<ee:transform doc:name="Transform Message" doc:id="7aa2f7f0-c8e5-4327-95d9-280ac699839f" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	tijd: payload.Bericht.tijd,
-	aankomsttijd: payload.Bericht.ETAs.*ETA.aankomsttijd default 0,
-	lijnNaam: payload.Bericht.lijnNaam,
-	busID: payload.Bericht.busID,
-	bedrijf: payload.Bericht.bedrijf,
-	eindpunt: payload.Bericht.eindpunt
+	tijd: vars.SetVar.bericht.tijd,
+	aankomsttijd: payload.aankomsttijd,
+	lijnNaam: vars.SetVar.bericht.lijnNaam,
+	busID: vars.SetVar.bericht.busID,
+	bedrijf: vars.SetVar.bericht.bedrijf,
+	eindpunt: vars.SetVar.bericht.eindpunt
 }]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<set-payload doc:name="Set Payload" doc:id="0c14665b-6049-4052-b4f5-d67bf4b50c92" value="#[payload]"/>
+				</ee:message>
+			</ee:transform>
+			<jms:publish doc:name="Publish" doc:id="7a9d7a66-661a-47fb-a2f5-4e29a845973d" config-ref="JMS_Config" sendCorrelationId="NEVER" destination="#[vars.SetVar.bericht.ETAs.ETA.halteNaam]">
+		</jms:publish>
+		</foreach>
 	</flow>
+	
 </mule>

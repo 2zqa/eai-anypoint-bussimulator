@@ -2,7 +2,7 @@
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog>
     <types:type name="output" format="xml">
-      <types:example format="xml" element="Bericht" location="examples/xml.xml"/>
+      <types:example format="xml" element="Bericht" location="examples/xml-1.xml"/>
     </types:type>
     <types:type name="input" format="json">
       <types:shape format="weave" example="examples/json.json"><![CDATA[%dw 2.0
@@ -46,6 +46,10 @@ type tijdjson = {|
     <types:type name="tijdxml" format="xml">
       <types:example format="xml" element="Tijd" location="examples/tijdxml.xml"/>
     </types:type>
+    <types:type name="transformETA" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#1d019930-c493-4960-97ef-6ed06e3a9918">
     <types:processor-declaration>
@@ -54,15 +58,6 @@ type tijdjson = {|
           <types:payload type="output"/>
         </types:message>
       </types:output-event>
-    </types:processor-declaration>
-  </types:enrichment>
-  <types:enrichment select="#0c14665b-6049-4052-b4f5-d67bf4b50c92">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="json"/>
-        </types:message>
-      </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07">
@@ -88,6 +83,15 @@ type tijdjson = {|
       <types:input-event>
         <types:message>
           <types:payload type="tijdjson"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0c14665b-6049-4052-b4f5-d67bf4b50c92">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json"/>
         </types:message>
       </types:input-event>
     </types:processor-declaration>
