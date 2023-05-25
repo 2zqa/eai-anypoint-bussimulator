@@ -12,11 +12,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
   </jms:active-mq-connection>
  </jms:config>
 	<flow name="opgave1Flow" doc:id="35986ee1-ba6e-4b1a-aad3-351f713c2632" >
-		<jms:listener doc:name="On New Message" doc:id="460b3d74-5407-48d7-8031-bccf86273710" config-ref="JMS_Config" destination="TEST">
+		<jms:listener doc:name="On New Message" doc:id="460b3d74-5407-48d7-8031-bccf86273710" config-ref="JMS_Config" destination="BusBericht.QUEUE">
 			<jms:consumer-type >
 				<jms:queue-consumer />
 			</jms:consumer-type>
 		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9c94e021-d8c7-431d-afaf-f8cecf52d9fd" message="Bericht ontvangen!"/>
 		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="c38e754a-0a2c-427b-b863-a84b143c2369" variableName="SetVar" mimeType="application/xml"/>
 		<foreach doc:name="For Each" doc:id="35099dd3-fd10-46ef-b2e3-2cc323a3e0d4" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.SetVar.bericht.ETAs.*ETA map(item,index) -&gt; {&#10;                halteNaam: item.halteNaam,&#10;                richting: item.richting,&#10;                aankomsttijd: item.aankomsttijd&#10;            }]">
 			<ee:transform doc:name="Transform Message" doc:id="7aa2f7f0-c8e5-4327-95d9-280ac699839f" >
