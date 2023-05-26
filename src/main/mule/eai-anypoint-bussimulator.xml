@@ -19,6 +19,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 	</jms:config>
 	<flow name="python-TimeServer-converter" doc:id="57a579ce-37bf-4746-8bb1-15e0b2bb33b3" >
 		<http:listener doc:name="Listener" doc:id="850768fd-b7c3-4530-a711-dc984532f858" config-ref="HTTP_Listener_config" path="/TijdServer"/>
+		<set-variable value='#["Requested responseType received: " ++ attributes.queryParams.responseType]' doc:name="responseType" doc:id="34c23a2d-b448-4b20-9c5c-5d679bbc1ae8" variableName="responseType"/>
+		<logger level="INFO" doc:name="Log responseType" doc:id="924a472c-150a-4045-a89a-f2d960371c8d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.responseType]"/>
 		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer" sendBodyMode="ALWAYS"/>
 		<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd" >
 			<ee:message >
