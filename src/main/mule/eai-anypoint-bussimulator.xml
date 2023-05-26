@@ -56,7 +56,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<jms:publish doc:name="Publish" doc:id="afb274b6-9c83-43d7-9217-2f209cc2bdd3" destination="INFOBord" destinationType="TOPIC" config-ref="JMS_Config"/>
+			<jms:publish doc:name="Publish" doc:id="afb274b6-9c83-43d7-9217-2f209cc2bdd3" destination="INFOBord.TOPIC" destinationType="TOPIC" config-ref="JMS_Config"/>
 		</foreach>
 	</flow>
 </mule>
