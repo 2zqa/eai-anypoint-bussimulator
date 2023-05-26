@@ -92,12 +92,49 @@ type tijdjson = {|
       </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#28b9c3d0-5a14-4fab-82d3-dc4708bde3d4">
+  <types:enrichment select="#b625549a-cc0f-41fe-ae40-19b643ace215">
     <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="output"/>
+        </types:message>
+      </types:input-event>
       <types:output-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#afb274b6-9c83-43d7-9217-2f209cc2bdd3">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#87264da7-e700-4619-9ff6-ce898c3077db">
+    <types:processor-declaration>
+      <types:input-event>
         <types:variables>
           <types:variable name="BusBericht" type="output"/>
         </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#07d6a061-61e9-4ced-9274-3e44f7c444a7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>

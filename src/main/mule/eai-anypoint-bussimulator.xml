@@ -40,5 +40,23 @@ output application/xml
 		<jms:listener doc:name="On New BusBericht" doc:id="8b90c924-3468-43ad-838d-1abf63f7b6c5" config-ref="JMS_Config" destination="BusBericht.QUEUE"/>
 		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;---&#10;read(payload, "application/xml")]' doc:name="BusBericht" doc:id="28b9c3d0-5a14-4fab-82d3-dc4708bde3d4" variableName="BusBericht"/>
 		<logger level="INFO" doc:name="Logger" doc:id="0c06f08e-7196-4fe9-8b96-8f92c2dd09bc" message='#["BusBericht XML received, on route: " ++ vars.BusBericht.Bericht.lijnNaam]'/>
+		<foreach doc:name="For Each ETA" doc:id="87264da7-e700-4619-9ff6-ce898c3077db" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.BusBericht.Bericht.ETAs.*ETA map(item,index) -&gt; {&#10;	halteNaam: item.halteNaam,&#10;	richting: item.richting,&#10;	aankomsttijd: item.aankomsttijd&#10;}]">
+			<ee:transform doc:name="Transform Message" doc:id="07d6a061-61e9-4ced-9274-3e44f7c444a7" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	tijd: vars.BusBericht.Bericht.tijd,
+	aankomsttijd: payload.aankomsttijd,
+	lijnNaam: vars.BusBericht.Bericht.lijnNaam,
+	busID: vars.BusBericht.Bericht.busID,
+	bedrijf: vars.BusBericht.Bericht.bedrijf,
+	eindpunt: vars.BusBericht.Bericht.eindpunt
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<jms:publish doc:name="Publish" doc:id="afb274b6-9c83-43d7-9217-2f209cc2bdd3" destination="INFOBord" destinationType="TOPIC" config-ref="JMS_Config"/>
+		</foreach>
 	</flow>
 </mule>
