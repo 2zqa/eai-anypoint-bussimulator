@@ -24,7 +24,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<logger level="INFO" doc:name="Log responseType" doc:id="924a472c-150a-4045-a89a-f2d960371c8d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.responseType]"/>
 		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer" sendBodyMode="ALWAYS" />
 		<choice doc:name="Choice" doc:id="0a59ffe9-e152-4872-a845-eb85025ef340" >
-			<when doc:id="46704418-5d2d-49c6-9003-87bd7a80147d" expression="#[vars.responseType == 'xml']">
+			<when doc:id="46704418-5d2d-49c6-9003-87bd7a80147d" expression="#[vars.responseType != 'json']">
 				<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
