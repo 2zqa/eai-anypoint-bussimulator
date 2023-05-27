@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="30f6a21c-7bce-46d0-adc0-fc715588f9da" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
@@ -19,12 +20,14 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 	</jms:config>
 	<flow name="python-TimeServer-converter" doc:id="57a579ce-37bf-4746-8bb1-15e0b2bb33b3" >
 		<http:listener doc:name="Listener" doc:id="850768fd-b7c3-4530-a711-dc984532f858" config-ref="HTTP_Listener_config" path="/TijdServer"/>
-		<set-variable value='#["Requested responseType received: " ++ attributes.queryParams.responseType]' doc:name="responseType" doc:id="34c23a2d-b448-4b20-9c5c-5d679bbc1ae8" variableName="responseType"/>
+		<set-variable value='#[attributes.queryParams.responseType]' doc:name="responseType" doc:id="34c23a2d-b448-4b20-9c5c-5d679bbc1ae8" variableName="responseType"/>
 		<logger level="INFO" doc:name="Log responseType" doc:id="924a472c-150a-4045-a89a-f2d960371c8d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.responseType]"/>
-		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer" sendBodyMode="ALWAYS"/>
-		<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer" sendBodyMode="ALWAYS" />
+		<choice doc:name="Choice" doc:id="0a59ffe9-e152-4872-a845-eb85025ef340" >
+			<when doc:id="46704418-5d2d-49c6-9003-87bd7a80147d" expression="#[vars.responseType == 'xml']">
+				<ee:transform doc:name="Transform Message" doc:id="b21eb187-255b-4658-8b83-1b58d0d650bd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ---
 {
@@ -36,6 +39,8 @@ output application/xml
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+			</when>
+		</choice>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="5c5b71e2-c4a0-4edf-a75e-86153a3b8018" />
 	</flow>
 	<flow name="eta-distributor" doc:id="947f253f-fbf4-4954-a952-7d279f8e9f44" >

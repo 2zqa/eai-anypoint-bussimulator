@@ -46,6 +46,10 @@ type tijdjson = {|
     <types:type name="tijdxml" format="xml">
       <types:example format="xml" element="Tijd" location="examples/tijdxml.xml"/>
     </types:type>
+    <types:type name="responseType" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#1d019930-c493-4960-97ef-6ed06e3a9918">
     <types:processor-declaration>
@@ -74,20 +78,11 @@ type tijdjson = {|
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#5c5b71e2-c4a0-4edf-a75e-86153a3b8018">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="tijdxml"/>
-        </types:message>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
   <types:enrichment select="#b21eb187-255b-4658-8b83-1b58d0d650bd">
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="tijdjson"/>
+          <types:payload type="json"/>
         </types:message>
       </types:input-event>
     </types:processor-declaration>
@@ -136,6 +131,15 @@ type tijdjson = {|
           <types:payload type="json"/>
         </types:message>
       </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#46704418-5d2d-49c6-9003-87bd7a80147d">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="responseType" type="responseType"/>
+        </types:variables>
+      </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
 </types:mule>
