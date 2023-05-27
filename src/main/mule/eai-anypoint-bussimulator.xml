@@ -21,7 +21,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<flow name="python-TimeServer-converter" doc:id="57a579ce-37bf-4746-8bb1-15e0b2bb33b3" >
 		<http:listener doc:name="Listener" doc:id="850768fd-b7c3-4530-a711-dc984532f858" config-ref="HTTP_Listener_config" path="/TijdServer"/>
 		<set-variable value='#[attributes.queryParams.responseType]' doc:name="responseType" doc:id="34c23a2d-b448-4b20-9c5c-5d679bbc1ae8" variableName="responseType"/>
-		<logger level="INFO" doc:name="Log responseType" doc:id="924a472c-150a-4045-a89a-f2d960371c8d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.responseType]"/>
+		<logger level="INFO" doc:name="Log responseType" doc:id="924a472c-150a-4045-a89a-f2d960371c8d" message='#["Client requested time in format " ++ (vars.responseType default "&lt;unspecified&gt;")]'/>
 		<http:request method="GET" doc:name="Request" doc:id="8415fe8f-5b22-4f6e-9c8f-4096bb52206a" config-ref="HTTP_Request_configuration" path="/TimeServer" sendBodyMode="ALWAYS" />
 		<choice doc:name="Choice" doc:id="0a59ffe9-e152-4872-a845-eb85025ef340" >
 			<when doc:id="46704418-5d2d-49c6-9003-87bd7a80147d" expression="#[vars.responseType != 'json']">
