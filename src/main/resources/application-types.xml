@@ -107,6 +107,9 @@ type: string]]></types:shape>
         <types:message>
           <types:payload type="json"/>
         </types:message>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
       </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
