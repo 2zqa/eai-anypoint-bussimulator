@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="output" format="xml">
+      <types:example format="xml" element="Bericht" location="examples/xml.xml"/>
+    </types:type>
+    <types:type name="input" format="json">
+      <types:shape format="weave" example="examples/json.json"><![CDATA[%dw 2.0
+
+type input = {|
+  tijd: Number {"typeId": "int"}, 
+  aankomsttijd: Number {"typeId": "int"}, 
+  lijnNaam: String, 
+  busID: String, 
+  bedrijf: String, 
+  eindpunt: String
+|} {"example": "{\\\"tijd\\\":15,\\\"aankomsttijd\\\":32,\\\"lijnNaam\\\":\\\"LIJN1\\\",\\\"busID\\\":\\\"3LIJN1R-1\\\",\\\"bedrijf\\\":\\\"ARRIVA\\\",\\\"eindpunt\\\":\\\"A\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="json" format="json">
+      <types:shape format="weave" example="examples/json-1.json"><![CDATA[%dw 2.0
+
+type json = {|
+  tijd: Number {"typeId": "int"}, 
+  aankomsttijd: Number {"typeId": "int"}, 
+  lijnNaam: String, 
+  busID: String, 
+  bedrijf: String, 
+  eindpunt: String
+|} {"example": "{\\\"tijd\\\":15,\\\"aankomsttijd\\\":32,\\\"lijnNaam\\\":\\\"LIJN1\\\",\\\"busID\\\":\\\"3LIJN1R-1\\\",\\\"bedrijf\\\":\\\"ARRIVA\\\",\\\"eindpunt\\\":\\\"A\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="tijdjson" format="json">
+      <types:shape format="weave" example="examples/tijdjson.json"><![CDATA[%dw 2.0
+
+type tijdjson = {|
+  minuut: Number {"typeId": "int"}, 
+  seconde: Number {"typeId": "int"}, 
+  uur: Number {"typeId": "int"}
+|} {"example": "{\\\"minuut\\\":6,\\\"seconde\\\":44,\\\"uur\\\":0}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="tijdxml" format="xml">
+      <types:example format="xml" element="Tijd" location="examples/tijdxml.xml"/>
+    </types:type>
+    <types:type name="responseType" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#1d019930-c493-4960-97ef-6ed06e3a9918">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="output"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0c14665b-6049-4052-b4f5-d67bf4b50c92">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#d1ff9747-ccf3-4baf-9d6a-b1fe11a3be07">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#b21eb187-255b-4658-8b83-1b58d0d650bd">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#b625549a-cc0f-41fe-ae40-19b643ace215">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="output"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#afb274b6-9c83-43d7-9217-2f209cc2bdd3">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#87264da7-e700-4619-9ff6-ce898c3077db">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#07d6a061-61e9-4ced-9274-3e44f7c444a7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#46704418-5d2d-49c6-9003-87bd7a80147d">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="responseType" type="responseType"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
