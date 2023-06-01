@@ -88,23 +88,10 @@ ns ns0 http://soapserver.qbuzz.com/
 		<logger level="INFO" doc:name="Log bus route" doc:id="0c06f08e-7196-4fe9-8b96-8f92c2dd09bc" message='#["BusBericht XML received, on route: " ++ vars.BusBericht.Bericht.lijnNaam]'/>
 		<foreach doc:name="For Each ETA" doc:id="87264da7-e700-4619-9ff6-ce898c3077db" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.BusBericht.Bericht.ETAs.*ETA map(item,index) -&gt; {&#10;	halteNaam: item.halteNaam,&#10;	richting: item.richting,&#10;	aankomsttijd: item.aankomsttijd&#10;}]">
 			<set-variable value="#[%dw 2.0&#10;output application/java&#10;---&#10;payload]" doc:name="ETA" doc:id="2132d23a-7a02-4f37-92a2-e16b776eb2bb" variableName="ETA"/>
-			<ee:transform doc:name="Convert XML to JSON" doc:id="07d6a061-61e9-4ced-9274-3e44f7c444a7" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	tijd: vars.BusBericht.Bericht.tijd,
-	aankomsttijd: vars.ETA.aankomsttijd,
-	lijnNaam: vars.BusBericht.Bericht.lijnNaam,
-	busID: vars.BusBericht.Bericht.busID,
-	bedrijf: vars.BusBericht.Bericht.bedrijf,
-	eindpunt: vars.BusBericht.Bericht.eindpunt
-}]]></ee:set-payload>
-				</ee:message>
-			</ee:transform>
+			<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	tijd: vars.BusBericht.Bericht.tijd,&#10;	aankomsttijd: vars.ETA.aankomsttijd,&#10;	lijnNaam: vars.BusBericht.Bericht.lijnNaam,&#10;	busID: vars.BusBericht.Bericht.busID,&#10;	bedrijf: vars.BusBericht.Bericht.bedrijf,&#10;	eindpunt: vars.BusBericht.Bericht.eindpunt&#10;}]" doc:name="JSONBericht" doc:id="13890e6d-33d8-48f9-a0c3-10afc44db4a6" variableName="JSONBericht"/>
 			<jms:publish doc:name="Publish" doc:id="afb274b6-9c83-43d7-9217-2f209cc2bdd3" destination="INFOBord.TOPIC" destinationType="TOPIC" config-ref="JMS_Config">
 				<jms:message >
+					<jms:body ><![CDATA[#[vars.JSONBericht]]]></jms:body>
 					<jms:properties ><![CDATA[#[{
 	HALTE: vars.ETA.halteNaam,
 	RICHTING: vars.ETA.richting

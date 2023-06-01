@@ -105,18 +105,6 @@ type: string]]></types:shape>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#afb274b6-9c83-43d7-9217-2f209cc2bdd3">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="json"/>
-        </types:message>
-        <types:variables>
-          <types:variable name="BusBericht" type="output"/>
-        </types:variables>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
   <types:enrichment select="#87264da7-e700-4619-9ff6-ce898c3077db">
     <types:processor-declaration>
       <types:input-event>
@@ -124,20 +112,6 @@ type: string]]></types:shape>
           <types:variable name="BusBericht" type="output"/>
         </types:variables>
       </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
-  <types:enrichment select="#07d6a061-61e9-4ced-9274-3e44f7c444a7">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:variables>
-          <types:variable name="BusBericht" type="output"/>
-        </types:variables>
-      </types:input-event>
-      <types:output-event>
-        <types:message>
-          <types:payload type="json"/>
-        </types:message>
-      </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#46704418-5d2d-49c6-9003-87bd7a80147d">
@@ -168,6 +142,45 @@ type: string]]></types:shape>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#563f9a90-0444-47ee-ada0-24c1a366a309">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#1810043b-0392-443d-babb-cb4e9415c39a">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="ETAJson" type="json"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#13890e6d-33d8-48f9-a0c3-10afc44db4a6">
+    <types:operation-declaration>
+      <types:inputs>
+        <types:parameter name="value" type="json"/>
+      </types:inputs>
+    </types:operation-declaration>
+  </types:enrichment>
+  <types:enrichment select="#afb274b6-9c83-43d7-9217-2f209cc2bdd3">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="JSONBericht" type="json"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#441319f4-1b60-4949-88ce-a22bb0c51622">
     <types:processor-declaration>
       <types:input-event>
         <types:variables>
