@@ -43,7 +43,7 @@ output application/xml
 		</choice>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="5c5b71e2-c4a0-4edf-a75e-86153a3b8018" />
 	</flow>
-	<flow name="eta-distributor" doc:id="947f253f-fbf4-4954-a952-7d279f8e9f44" >
+	<flow name="eta-distributor-and-logger" doc:id="947f253f-fbf4-4954-a952-7d279f8e9f44" >
 		<jms:listener doc:name="On New BusBericht" doc:id="8b90c924-3468-43ad-838d-1abf63f7b6c5" config-ref="JMS_Config" destination="BusBericht.QUEUE"/>
 		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;---&#10;read(payload, "application/xml")]' doc:name="BusBericht" doc:id="28b9c3d0-5a14-4fab-82d3-dc4708bde3d4" variableName="BusBericht"/>
 		<choice doc:name="Choice" doc:id="c4d20c40-c1f5-4a81-9574-726fdf6923e4" >
