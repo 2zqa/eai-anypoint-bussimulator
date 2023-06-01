@@ -82,6 +82,9 @@ ns ns0 http://soapserver.qbuzz.com/
 	}
 }]]]></wsc:body>
 					</wsc:message>
+					<wsc:transport-headers >
+						<wsc:transport-header key="soapaction" value='""' />
+					</wsc:transport-headers>
 				</wsc:consume>
 			</when>
 		</choice>
@@ -108,6 +111,9 @@ ns ns0 http://soapserver.qbuzz.com/
 	}
 }]]]></wsc:body>
 						</wsc:message>
+						<wsc:transport-headers >
+							<wsc:transport-header key="soapaction" value='""' />
+						</wsc:transport-headers>
 					</wsc:consume>
 				</when>
 				<when expression='#[vars.BusBericht.Bericht.bedrijf == "QBUZZ" and vars.ETA.aankomsttijd != "0" and vars.BusBericht.Bericht.eindpunt != vars.ETA.halteNaam]'>
@@ -129,6 +135,9 @@ ns ns0 http://soapserver.qbuzz.com/
 	}
 }]]]></wsc:body>
 						</wsc:message>
+						<wsc:transport-headers >
+							<wsc:transport-header key="soapaction" value='""' />
+						</wsc:transport-headers>
 					</wsc:consume>
 				</when>
 			</choice>
