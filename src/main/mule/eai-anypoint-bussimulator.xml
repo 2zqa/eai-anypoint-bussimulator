@@ -89,6 +89,49 @@ ns ns0 http://soapserver.qbuzz.com/
 		<foreach doc:name="For Each ETA" doc:id="87264da7-e700-4619-9ff6-ce898c3077db" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.BusBericht.Bericht.ETAs.*ETA map(item,index) -&gt; {&#10;	halteNaam: item.halteNaam,&#10;	richting: item.richting,&#10;	aankomsttijd: item.aankomsttijd&#10;}]">
 			<set-variable value="#[%dw 2.0&#10;output application/java&#10;---&#10;payload]" doc:name="ETA" doc:id="2132d23a-7a02-4f37-92a2-e16b776eb2bb" variableName="ETA"/>
 			<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	tijd: vars.BusBericht.Bericht.tijd,&#10;	aankomsttijd: vars.ETA.aankomsttijd,&#10;	lijnNaam: vars.BusBericht.Bericht.lijnNaam,&#10;	busID: vars.BusBericht.Bericht.busID,&#10;	bedrijf: vars.BusBericht.Bericht.bedrijf,&#10;	eindpunt: vars.BusBericht.Bericht.eindpunt&#10;}]" doc:name="JSONBericht" doc:id="13890e6d-33d8-48f9-a0c3-10afc44db4a6" variableName="JSONBericht"/>
+			<choice doc:name="Choice" doc:id="c2bd015a-3bfa-4b72-83f1-7910a3754926" >
+				<when doc:id="441319f4-1b60-4949-88ce-a22bb0c51622" expression='#[vars.BusBericht.Bericht.bedrijf == "QBUZZ" and vars.BusBericht.Bericht.eindpunt == vars.ETA.halteNaam]'>
+					<wsc:consume doc:name="Bus bij eindpunt" doc:id="f6427e5b-e72b-41d1-805d-7e8ba6ca69f0" config-ref="QBUZZ_Webservices" operation="receiveBusBijEindpunt">
+						<wsc:message >
+							<wsc:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://soapserver.qbuzz.com/
+---
+{
+	ns0#receiveBusBijEindpunt: {
+		aankomstbericht: {
+			busID: vars.BusBericht.Bericht.busID,
+			lijn: vars.BusBericht.Bericht.lijnNaam,
+			eindpunt: vars.BusBericht.Bericht.eindpunt,
+			aankomsttijd: vars.ETA.aankomsttijd
+		}
+	}
+}]]]></wsc:body>
+						</wsc:message>
+					</wsc:consume>
+				</when>
+				<when expression='#[vars.BusBericht.Bericht.bedrijf == "QBUZZ" and vars.ETA.aankomsttijd != "0" and vars.BusBericht.Bericht.eindpunt != vars.ETA.halteNaam]'>
+					<wsc:consume doc:name="Bus bij halte" doc:id="0634ef52-bdba-4d36-b806-de75be60b32b" config-ref="QBUZZ_Webservices" operation="receiveBusBijHalte">
+						<wsc:message >
+							<wsc:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://soapserver.qbuzz.com/
+---
+{
+	ns0#receiveBusBijHalte: {
+		haltebericht: {
+			busID: vars.BusBericht.Bericht.busID,
+			lijn: vars.BusBericht.Bericht.lijnNaam,
+			halte: vars.ETA.halteNaam,
+			tijd: vars.BusBericht.Bericht.tijd,
+			eindpunt: vars.BusBericht.Bericht.eindpunt
+		}
+	}
+}]]]></wsc:body>
+						</wsc:message>
+					</wsc:consume>
+				</when>
+			</choice>
 			<jms:publish doc:name="Publish" doc:id="afb274b6-9c83-43d7-9217-2f209cc2bdd3" destination="INFOBord.TOPIC" destinationType="TOPIC" config-ref="JMS_Config">
 				<jms:message >
 					<jms:body ><![CDATA[#[vars.JSONBericht]]]></jms:body>
