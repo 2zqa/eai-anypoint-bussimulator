@@ -50,6 +50,10 @@ type tijdjson = {|
       <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
 type: string]]></types:shape>
     </types:type>
+    <types:type name="HalteBericht" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#1d019930-c493-4960-97ef-6ed06e3a9918">
     <types:processor-declaration>
@@ -146,6 +150,24 @@ type: string]]></types:shape>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#050725f2-684f-4ae3-9e65-6bfb8d0f38a6">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#58c0b99c-02e2-4ad9-b959-e2e2e1b8ce1e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="BusBericht" type="output"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#563f9a90-0444-47ee-ada0-24c1a366a309">
     <types:processor-declaration>
       <types:input-event>
         <types:variables>

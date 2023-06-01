@@ -58,6 +58,32 @@ output application/xml
 			</jms:message>
 		</jms:publish>
 			</when>
+			<when expression='#[vars.BusBericht.Bericht.bedrijf == "QBUZZ"]'>
+				<wsc:consume doc:name="Consume" doc:id="563f9a90-0444-47ee-ada0-24c1a366a309" config-ref="QBUZZ_Webservices" operation="logEtas">
+					<wsc:message >
+						<wsc:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://soapserver.qbuzz.com/
+---
+{
+	ns0#logEtas: {
+		etaBericht: {
+			lijnNaam: vars.BusBericht.Bericht.lijnNaam,
+			eindpunt: vars.BusBericht.Bericht.eindpunt,
+			bedrijf: vars.BusBericht.Bericht.bedrijf,
+			busID: vars.BusBericht.Bericht.busID,
+			tijd: vars.BusBericht.Bericht.tijd,
+			ETAs: vars.BusBericht.Bericht.ETAs.*ETA map(item, index) -> {
+				halteNaam: item.halteNaam,
+				richting: item.richting,
+				aankomsttijd: item.aankomsttijd
+			}
+		}
+	}
+}]]]></wsc:body>
+					</wsc:message>
+				</wsc:consume>
+			</when>
 		</choice>
 		<logger level="INFO" doc:name="Log bus route" doc:id="0c06f08e-7196-4fe9-8b96-8f92c2dd09bc" message='#["BusBericht XML received, on route: " ++ vars.BusBericht.Bericht.lijnNaam]'/>
 		<foreach doc:name="For Each ETA" doc:id="87264da7-e700-4619-9ff6-ce898c3077db" collection="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.BusBericht.Bericht.ETAs.*ETA map(item,index) -&gt; {&#10;	halteNaam: item.halteNaam,&#10;	richting: item.richting,&#10;	aankomsttijd: item.aankomsttijd&#10;}]">
